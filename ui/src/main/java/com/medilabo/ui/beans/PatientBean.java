@@ -2,21 +2,23 @@ package com.medilabo.ui.beans;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 public class PatientBean {
     private int id;
-    //@NotNull
-    //@NotEmpty(message = "Patient firstname is mandatory")
+    @NotNull
+    @NotEmpty(message = "Patient firstname is mandatory")
     private String firstname;
-    //@NotNull
-    //@NotEmpty(message = "Patient lastname is mandatory")
+    @NotNull
+    @NotEmpty(message = "Patient lastname is mandatory")
     private String lastname;
-    //@NotNull(message = "Patient birth date is mandatory")
+    @NotNull(message = "Patient birth date is mandatory")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
-    //@NotNull
-    //@NotEmpty(message = "Patient gender is mandatory")
+    @NotNull
+    @NotEmpty(message = "Patient gender is mandatory")
     private String gender;
     private String address;
     private String phone;

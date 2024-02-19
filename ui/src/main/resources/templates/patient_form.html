@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MediLabo Solutions - Patient information</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h1>Patient information</h1>
+        </div>
+        <form method="post" th:action="@{/patient_form}" th:object="${patient}">
+            <div class="form-group row py-1">
+                <label for="firstname" class="col-md-2 col-form-label">Firstname</label>
+                <div class="col-md-5">
+                    <input th:field="*{firstname}"
+                           type="text"
+                           id="firstname"
+                           class="form-control"
+                           placeholder="Enter firstname"
+                    >
+                    <span class="text-danger" th:errors="*{firstname}">Firstname shouldn't be empty</span>
+                </div>
+            </div>
+
+            <div class="form-group row py-1">
+                <label for="lastname" class="col-md-2 col-form-label">Lastname</label>
+                <div class="col-md-5">
+                    <input th:field="*{lastname}"
+                           type="text"
+                           id="lastname"
+                           class="form-control"
+                           placeholder="Mandatory"
+                    >
+                    <span class="text-danger" th:errors="*{lastname}">Lastname shouldn't be empty</span>
+                </div>
+            </div>
+
+            <div class="form-group row py-1">
+                <label for="birthDate" class="col-md-2 col-form-label">Birth date</label>
+                <div class="col-md-5">
+                    <input th:field="*{birthDate}"
+                           type="date"
+                           id="birthDate"
+                           class="form-control"
+                           placeholder="Mandatory"
+                    >
+                    <span class="text-danger" th:errors="*{birthDate}">Birth date shouldn't be empty</span>
+                </div>
+            </div>
+
+            <div class="form-group row py-1">
+                <label for="gender" class="col-md-2 col-form-label">Gender</label>
+                <div class="col-md-5">
+                    <select th:field="*{gender}" id="gender" class="form-control">
+                        <option value="0">Select a value</option>
+                        <option th:value="'F'" th:text="F" th:selected="${gender==F}">F</option>
+                        <option th:value="'M'" th:text="M" th:selected="${gender==M}">M</option>
+                    </select>
+                    <span class="text-danger" th:errors="*{gender}">Select patient's gender</span>
+                </div>
+            </div>
+
+            <div class="form-group row py-1">
+                <label for="address" class="col-md-2 col-form-label">Address</label>
+                <div class="col-md-5">
+                    <input th:field="*{address}"
+                           type="text"
+                           id="address"
+                           class="form-control"
+                           placeholder="Enter address"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group row py-1">
+                <label for="phone" class="col-md-2 col-form-label">Phone number</label>
+                <div class="col-md-5">
+                    <input th:field="*{phone}"
+                           type="text"
+                           id="phone"
+                           class="form-control"
+                           placeholder="Enter phone number"
+                    >
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <input th:field="*{id}"
+                           type="hidden"
+                           id="id"
+                    >
+                </div>
+            </div>
+            <div class="form-group row py-1 mt-3">
+                <div class="col-md-2">
+                    <a class="btn btn-secondary" href="/" role="button">Cancel</a>
+                 </div>
+                <div class="col-md-5 text-end">
+                    <button type="submit" class="btn btn-primary">Update patient info</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
