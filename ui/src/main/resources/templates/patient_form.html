@@ -12,7 +12,7 @@
         <div class="row">
             <h1>Patient information</h1>
         </div>
-        <form method="post" th:action="@{/patient_form}" th:object="${patient}">
+        <form action="#" th:action="@{/patient_form}" th:object="${patientBean}" method="post">
             <div class="form-group row py-1">
                 <label for="firstname" class="col-md-2 col-form-label">Firstname</label>
                 <div class="col-md-5">
@@ -33,22 +33,22 @@
                            type="text"
                            id="lastname"
                            class="form-control"
-                           placeholder="Mandatory"
+                           placeholder="Enter lastname"
                     >
                     <span class="text-danger" th:errors="*{lastname}">Lastname shouldn't be empty</span>
                 </div>
             </div>
 
             <div class="form-group row py-1">
-                <label for="birthDate" class="col-md-2 col-form-label">Birth date</label>
+                <label for="birthdate" class="col-md-2 col-form-label">Birthdate</label>
                 <div class="col-md-5">
-                    <input th:field="*{birthDate}"
+                    <input th:field="*{birthdate}"
+                           th:value="${#dates.format(birthdate, 'yyyy-MM-dd')}"
                            type="date"
-                           id="birthDate"
+                           id="birthdate"
                            class="form-control"
-                           placeholder="Mandatory"
                     >
-                    <span class="text-danger" th:errors="*{birthDate}">Birth date shouldn't be empty</span>
+                    <span class="text-danger" th:errors="*{birthdate}">Birth date shouldn't be empty</span>
                 </div>
             </div>
 
@@ -56,7 +56,7 @@
                 <label for="gender" class="col-md-2 col-form-label">Gender</label>
                 <div class="col-md-5">
                     <select th:field="*{gender}" id="gender" class="form-control">
-                        <option value="0">Select a value</option>
+                        <option value="">Select a value</option>
                         <option th:value="'F'" th:text="F" th:selected="${gender==F}">F</option>
                         <option th:value="'M'" th:text="M" th:selected="${gender==M}">M</option>
                     </select>
@@ -100,7 +100,7 @@
                     <a class="btn btn-secondary" href="/" role="button">Cancel</a>
                  </div>
                 <div class="col-md-5 text-end">
-                    <button type="submit" class="btn btn-primary">Update patient info</button>
+                    <button type="submit" class="btn btn-primary">Save patient info</button>
                 </div>
             </div>
         </form>

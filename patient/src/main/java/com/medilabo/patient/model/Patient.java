@@ -3,6 +3,7 @@ package com.medilabo.patient.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -21,9 +22,10 @@ public class Patient {
     @NotNull
     @NotEmpty(message = "Patient lastname is mandatory")
     private String lastname;
-    @Column(name = "birth_date")
-    @NotNull(message = "Patient birth date is mandatory")
-    private Date birthDate;
+    @Column(name = "birthdate")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Patient birthdate is mandatory")
+    private Date birthdate;
     @Column(name = "gender")
     @NotNull
     @NotEmpty(message = "Patient gender is mandatory")
@@ -36,10 +38,10 @@ public class Patient {
     public Patient() {
     }
 
-    public Patient(String firstname, String lastname, Date birthDate, String gender, String address, String phone) {
+    public Patient(String firstname, String lastname, Date birthdate, String gender, String address, String phone) {
         this.firstname = firstname;
         this.lastname = lastname;
-        this.birthDate = birthDate;
+        this.birthdate = birthdate;
         this.gender = gender;
         this.address = address;
         this.phone = phone;
@@ -69,12 +71,12 @@ public class Patient {
         this.lastname = lastname;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
+    public Date getBirthdate() {
+        return birthdate;
     }
 
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
     }
 
     public String getGender() {

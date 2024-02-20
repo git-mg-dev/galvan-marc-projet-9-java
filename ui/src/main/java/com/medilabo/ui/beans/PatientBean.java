@@ -2,6 +2,7 @@ package com.medilabo.ui.beans;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -14,11 +15,12 @@ public class PatientBean {
     @NotNull
     @NotEmpty(message = "Patient lastname is mandatory")
     private String lastname;
-    @NotNull(message = "Patient birth date is mandatory")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date birthDate;
+    @NotNull(message = "Select patient birthdate")
+    @Past(message = "Birthdate must be in the past")
+    private Date birthdate;
     @NotNull
-    @NotEmpty(message = "Patient gender is mandatory")
+    @NotEmpty(message = "Select patient gender")
     private String gender;
     private String address;
     private String phone;
@@ -50,12 +52,12 @@ public class PatientBean {
         this.lastname = lastname;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
+    public Date getBirthdate() {
+        return birthdate;
     }
 
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
     }
 
     public String getGender() {
@@ -88,7 +90,7 @@ public class PatientBean {
                 "id=" + id +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
-                ", birthDate=" + birthDate +
+                ", birthDate=" + birthdate +
                 ", gender='" + gender + '\'' +
                 ", address='" + address + '\'' +
                 ", phone='" + phone + '\'' +

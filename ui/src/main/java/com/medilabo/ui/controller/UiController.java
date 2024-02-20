@@ -4,6 +4,7 @@ import com.medilabo.ui.beans.PatientBean;
 import com.medilabo.ui.proxies.PatientProxy;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,10 +27,15 @@ public class UiController {
 
     @GetMapping("/patient_form")
     public String getPatientInfo(@RequestParam(required = false) Integer id, Model model) {
-        PatientBean patient = patientProxy.getPatientById(id);
-        model.addAttribute("patient", patient);
+        PatientBean patient = new PatientBean();
 
-        //TODO: handle null patient -> redirect to home with error
+        if(id != null) {
+            patient = patientProxy.getPatientById(id);
+        }
+
+        model.addAttribute("patientBean", patient);
+
+        //TODO: handle null patient -> redirect to home with error ?
 
         return "patient_form";
     }
@@ -38,13 +44,18 @@ public class UiController {
     public String updatePatient(@Valid PatientBean patient, BindingResult bindingResult, Model model) {
         if(!bindingResult.hasErrors()) {
             if(patient.getId() > 0) {
-                //TODO : handle date saved at day-1
                 patientProxy.updatePatient(patient);
+            } else {
+                try {
+                    ResponseEntity<PatientBean> savedPatient = patientProxy.addPatient(patient);
+                } catch (Exception e) {
+                    return "redirect:/?error";
+                }
             }
             return "redirect:/?success";
         }
 
-        model.addAttribute("patient", patient);
+        model.addAttribute("patientBean", patient);
         return "/patient_form";
     }
 }
