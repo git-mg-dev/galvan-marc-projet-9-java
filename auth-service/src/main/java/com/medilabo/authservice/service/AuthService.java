@@ -23,4 +23,16 @@ public class AuthService {
         //TODO
         return "";
     }
+
+    public Doctor findByUsername(String username) {
+        return doctorService.getDoctorByUsername(username);
+    }
+
+    public Boolean isValidToken(String token) {
+        return jwtService.validateToken(token);
+    }
+
+    public String getUsername(String token) {
+        return jwtService.getUsername(token);
+    }
 }

@@ -10,14 +10,15 @@ import java.util.List;
 @FeignClient(name = "medilabo-gateway-service", url = "localhost:9004")
 public interface PatientProxy {
     @GetMapping("/patient")
-    List<PatientBean> getAllPatient();
+    List<PatientBean> getAllPatient(@RequestHeader(value = "Authorization", required = true) String token);
 
     @GetMapping("/patient/{id}")
-    PatientBean getPatientById(@PathVariable int id);
+    PatientBean getPatientById(@RequestHeader(value = "Authorization", required = true) String token, @PathVariable int id);
 
     @PostMapping("/patient")
-    ResponseEntity<PatientBean> addPatient(@RequestBody PatientBean patient);
+    ResponseEntity<PatientBean> addPatient(@RequestHeader(value = "Authorization", required = true) String token, @RequestBody PatientBean patient);
 
     @PutMapping("/patient")
-    void updatePatient(@RequestBody PatientBean patient);
+    void updatePatient(@RequestHeader(value = "Authorization", required = true) String token, @RequestBody PatientBean patient);
+
 }
