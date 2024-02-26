@@ -37,14 +37,14 @@ public class JwtService {
         }
     }
 
-    public Date getExpirationDateFromToken(String token) {
+    public Date getExpirationDateFromToken(String token) throws NullPointerException {
         return getAllClaimsFromToken(token).getExpiration();
     }
 
     public String getUsername(String token) {
         return getAllClaimsFromToken(token).getSubject();
     }
-    public Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) throws NullPointerException {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
@@ -61,7 +61,7 @@ public class JwtService {
                 .compact();
     }
 
-    public Boolean validateToken(String token) {
+    public Boolean validateToken(String token) throws NullPointerException {
         return !isTokenExpired(token);
     }
 

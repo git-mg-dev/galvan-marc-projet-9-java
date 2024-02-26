@@ -1,7 +1,7 @@
 package com.medilabo.ui.controller;
 
 import com.medilabo.ui.beans.PatientBean;
-import com.medilabo.ui.proxies.PatientProxy;
+import com.medilabo.ui.proxies.GatewayProxy;
 import com.medilabo.ui.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-public class UiController {
+public class PatientController {
     @Autowired
-    private PatientProxy patientProxy;
+    private GatewayProxy gatewayProxy;
 
     @GetMapping("/home")
     public String getPatients(HttpServletRequest httpServletRequest, Model model) {
 
         String token = JwtUtil.findToken(httpServletRequest);
-        List<PatientBean> patients = patientProxy.getAllPatient(token);
+        List<PatientBean> patients = gatewayProxy.getAllPatient(token);
         model.addAttribute("patients", patients);
 
         return "home";
@@ -35,7 +35,7 @@ public class UiController {
         String token = JwtUtil.findToken(httpServletRequest);
 
         if(id != null) {
-            patient = patientProxy.getPatientById(token, id);
+            patient = gatewayProxy.getPatientById(token, id);
         }
 
         model.addAttribute("patientBean", patient);
@@ -51,10 +51,10 @@ public class UiController {
 
         if(!bindingResult.hasErrors()) {
             if(patient.getId() > 0) {
-                patientProxy.updatePatient(token, patient);
+                gatewayProxy.updatePatient(token, patient);
             } else {
                 try {
-                    ResponseEntity<PatientBean> savedPatient = patientProxy.addPatient(token, patient);
+                    ResponseEntity<PatientBean> savedPatient = gatewayProxy.addPatient(token, patient);
                 } catch (Exception e) {
                     return "redirect:/?error";
                 }

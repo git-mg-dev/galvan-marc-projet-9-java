@@ -18,9 +18,10 @@ public class GatewayConfig {
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:9001/"))
 
-                .route("medilabo-authentication-service", r -> r.path("/authenticate/**")
+                .route("medilabo-notes", r -> r.path("/notes/**")
                         .filters(f -> f.filter(filter))
-                        .uri("http://localhost:9005/"))
+                        .uri("http://localhost:9002/"))
+
                 .build();
     }
 }

@@ -1,2 +1,3 @@
 # MediLabo Solutions
-Microservice Gateway service 
+Microservice Gateway
+- Nécessite un jeton JWT valide pour accéder aux microservices Patient, Notes et Risk

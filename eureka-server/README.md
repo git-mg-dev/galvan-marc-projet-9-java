@@ -1,2 +1,2 @@
 # MediLabo Solutions
-Microservice Eureka Server 
+Microservice Discovery Server Eureka 

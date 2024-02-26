@@ -4,6 +4,7 @@ import com.medilabo.authservice.configuration.AuthRequest;
 import com.medilabo.authservice.model.Doctor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,7 +30,11 @@ public class AuthService {
     }
 
     public Boolean isValidToken(String token) {
-        return jwtService.validateToken(token);
+        try {
+            return jwtService.validateToken(token);
+        } catch (NullPointerException | JwtValidationException e) {
+            return false;
+        }
     }
 
     public String getUsername(String token) {

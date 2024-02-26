@@ -50,7 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     log.info("Invalid token (wrong user or expired token");
                 }
             } catch (Exception e) {
-                log.error("Authentication error: " + e.getMessage());
+                log.error("Authentication error: invalid token");
+                JwtUtil.deleteToken(request, response);
             }
         } else {
             log.info("No cookie found");
