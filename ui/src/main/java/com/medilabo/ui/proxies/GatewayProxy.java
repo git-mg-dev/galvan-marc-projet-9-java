@@ -27,4 +27,7 @@ public interface GatewayProxy {
 
     @PostMapping("/notes")
     ResponseEntity<NoteBean> addNote(@RequestHeader(value = "Authorization", required = true) String token, @RequestBody NoteBean note);
+
+    @GetMapping("/risk/{patientId}")
+    public String assessRisk(@RequestHeader(value = "Authorization", required = true) String token, @PathVariable Integer patientId);
 }

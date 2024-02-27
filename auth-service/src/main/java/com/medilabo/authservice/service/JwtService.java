@@ -33,7 +33,6 @@ public class JwtService {
         } catch (JwtException e) {
             System.out.println(e.getMessage());
             return null;
-            //TODO: handle exception
         }
     }
 

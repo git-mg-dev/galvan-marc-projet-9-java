@@ -24,6 +24,8 @@ public class PatientController {
 
         String token = JwtUtil.findToken(httpServletRequest);
         List<PatientBean> patients = gatewayProxy.getAllPatient(token);
+        patients.forEach(patient -> patient.setRiskLevel(gatewayProxy.assessRisk(token, patient.getId())));
+
         model.addAttribute("patients", patients);
 
         return "home";
@@ -39,8 +41,6 @@ public class PatientController {
         }
 
         model.addAttribute("patientBean", patient);
-
-        //TODO: handle null patient -> redirect to home with error ?
 
         return "patient_form";
     }

@@ -69,7 +69,6 @@ public class LoginController {
         }
     }
 
-    //TODO: add logout link somewhere
     @PostMapping("/log_out")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
 

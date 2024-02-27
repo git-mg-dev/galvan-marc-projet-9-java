@@ -25,20 +25,33 @@ public class NoteController {
 
     @GetMapping("/notes")
     public String getNotesByPatientId(@RequestParam(required = false) Integer id, HttpServletRequest httpServletRequest, Model model) {
-        PatientBean patient = new PatientBean();
-        List<NoteBean> notes = new ArrayList<>();
-        NoteBean noteBean = new NoteBean();
         String token = JwtUtil.findToken(httpServletRequest);
 
         if(id != null) {
-            patient = gatewayProxy.getPatientById(token, id);
+            PatientBean patient = gatewayProxy.getPatientById(token, id);
+            patient.setRiskLevel(gatewayProxy.assessRisk(token, patient.getId()));
+
             if(patient != null) {
-                notes = gatewayProxy.getNotesByPatientId(token, id);
+                List<NoteBean> notes = gatewayProxy.getNotesByPatientId(token, id);
+                NoteBean noteBean = new NoteBean();
                 noteBean.setPatientId(patient.getId());
                 noteBean.setPatient(patient.getLastname());
 
                 model.addAttribute("notes", notes); // list of notes
                 model.addAttribute("noteBean", noteBean); // new noteBean for form
+
+                model.addAttribute("firstname", patient.getFirstname());
+                model.addAttribute("lastname", patient.getLastname());
+                model.addAttribute("birthdate", patient.getBirthdate());
+                model.addAttribute("age", patient.getAge());
+                model.addAttribute("gender", patient.getGender());
+
+                if(patient.getRiskLevel() != null) {
+                    model.addAttribute("riskLevel", patient.getRiskLevel());
+                } else {
+                    model.addAttribute("riskLevel", "");
+                }
+
                 return "notes";
             }
         }

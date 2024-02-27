@@ -21,7 +21,6 @@ public class AuthService {
                 return jwtService.generateToken(doctor);
             }
         }
-        //TODO
         return "";
     }
 

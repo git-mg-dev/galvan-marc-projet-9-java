@@ -22,6 +22,10 @@ public class GatewayConfig {
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:9002/"))
 
+                .route("medilabo-risk", r -> r.path("/risk/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:9003/"))
+
                 .build();
     }
 }

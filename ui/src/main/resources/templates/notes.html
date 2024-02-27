@@ -10,7 +10,12 @@
 <body>
 <div class="container">
     <div class="row">
-        <h1>Patient history</h1>
+        <h1 class="col-md-6">Patient history</h1>
+        <div class="col-md-6 text-end mt-2">
+            <form th:action="@{/log_out}" method="POST">
+                <input type="submit" value="Logout" class="btn btn-outline-secondary"/>
+            </form>
+        </div>
         <div th:if="${param.success}" class="alert alert-success">
             <div>Note successfully saved.</div>
         </div>
@@ -18,34 +23,44 @@
             <div>Error while saving note.</div>
         </div>
     </div>
+    <div class="row bg-light p-4 mt-4">
+        <div class="col-md-2 text-center"><strong>Patient:</strong></div>
+        <div class="col-md-2"><span th:text="${firstname}">Firstname</span></div>
+        <div class="col-md-2"><span th:text="${lastname}">Lastname</span></div>
+        <div class="col-md-2"><span th:text="${#dates.format(birthdate, 'dd/MM/yyyy')}">yyyy-MM-dd</span></div>
+        <div class="col-md-1">
+            <span>Age: </span>
+            <span th:text="${age}">XX</span>
+        </div>
+        <div class="col-md-1"><span th:text="${gender}">F/M</span></div>
+        <div class="col-md-2 text-center" th:switch="${riskLevel}">
+            <span th:case="'None'" th:text="${riskLevel}" class="badge bg-success">None</span>
+            <span th:case="'BorderLine'" th:text="${riskLevel}" class="badge bg-warning">BorderLine</span>
+            <span th:case="'InDanger'" th:text="${riskLevel}" class="badge bg-danger">InDanger</span>
+            <span th:case="'EarlyOnset'" th:text="${riskLevel}" class="badge bg-dark">EarlyOnset</span>
+            <span th:case="'ErrorGenderUnknown'" th:text="${riskLevel}" class="badge bg-secondary">Error</span>
+            <span th:case="'ErrorNoData'" th:text="${riskLevel}" class="badge bg-secondary">Error</span>
+            <span th:case="*"></span>
+        </div>
+    </div>
     <div class="row">
-        <table class="table table-striped table-hover table-fixed">
+        <table class="table table-striped table-hover table-fixed mt-4">
             <thead>
             <tr class="table-secondary">
-                <th scope="col" class="col-md-1">#</th>
-                <th scope="col" class="col-md-3">Patient lastname</th>
-                <th scope="col" class="col-md-8">Note</th>
+                <th scope="col" class="col-md-2 text-center">#</th>
+                <th scope="col" class="col-md-10">Note</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(notes)}">
-                <td colspan="8">No patient found.</td>
+                <td colspan="8">No patient history.</td>
             </tr>
             <tr th:each="note, state : ${notes}">
-                <th th:text="${state.index+1}" scope="row">1</th>
-                <td th:text="${note.patient}">TestName</td>
+                <th th:text="${state.index+1}" scope="row" class="text-center">1</th>
                 <td th:text="${note.note}">Text</td>
             </tr>
             </tbody>
         </table>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <a class="btn btn-secondary" href="/" role="button">Back home</a>
-        </div>
-        <!-- div class="col-md-10">
-            <a class="btn btn-success" href="/note_form" role="button">Add note</a>
-        </div -->
     </div>
     <div class="row my-5 py-3 bg-light">
         <form action="#" th:action="@{/notes}" th:object="${noteBean}" method="post">
@@ -86,6 +101,11 @@
                 </div>
             </div>
         </form>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <a class="btn btn-secondary" href="/" role="button">Back home</a>
+        </div>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

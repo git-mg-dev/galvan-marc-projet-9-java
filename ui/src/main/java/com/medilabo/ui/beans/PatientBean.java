@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Past;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Data
@@ -28,4 +31,18 @@ public class PatientBean {
     private String gender;
     private String address;
     private String phone;
+    private String riskLevel;
+
+    public Integer getAge() {
+        Integer age = null;
+        if(this.birthdate != null) {
+            LocalDate birthdate = this.birthdate
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            LocalDate today = LocalDate.now(ZoneId.systemDefault());
+            age = Period.between(birthdate, today).getYears();
+        }
+        return age;
+    }
 }

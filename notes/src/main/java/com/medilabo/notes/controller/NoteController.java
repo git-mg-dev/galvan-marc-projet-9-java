@@ -19,6 +19,11 @@ public class NoteController {
         return noteService.getNotesByPatientId(patientId);
     }
 
+    @GetMapping("/notes/trigger/{patientId}")
+    public List<String> getTriggersByPatientId(@PathVariable int patientId) {
+        return noteService.getTriggerForPatient(patientId);
+    }
+
     @PostMapping("/notes")
     private ResponseEntity<Note> addNote(@RequestBody Note note) {
         try {
