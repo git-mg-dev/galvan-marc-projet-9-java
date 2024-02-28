@@ -1,3 +1,8 @@
+-- create database
+CREATE DATABASE IF NOT EXISTS medilabo;
+
+
+-- create tables
 DROP TABLE IF EXISTS patient;
 DROP TABLE IF EXISTS doctor;
 
@@ -19,6 +24,7 @@ CREATE TABLE doctor (
         PRIMARY KEY(id)
 );
 
+-- Add data
 INSERT INTO patient (firstname, lastname, birthdate, gender, address, phone) VALUES
 ('Test', 'TestNone', '1966-12-31', 'F', '1 Brookside St', '100-222-3333'),
 ('Test', 'TestBorderline', '1945-06-24', 'M', '2 High St', '200-333-4444'),
