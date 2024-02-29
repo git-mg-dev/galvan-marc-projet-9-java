@@ -1,4 +1,11 @@
+FROM maven:3.9.6-eclipse-temurin-17-alpine as build
+ENV HOME=/usr/app
+RUN mkdir -p $HOME
+WORKDIR $HOME
+ADD . $HOME
+RUN mvn clean package -DskipTests
+
 FROM eclipse-temurin:17-jdk-alpine
-VOLUME /tmp
-COPY target/*.jar medilabo-auth-service.jar
-ENTRYPOINT ["java", "-jar", "/medilabo-auth-service.jar"]
+COPY --from=build /usr/app/target/auth-service-0.0.1-SNAPSHOT.jar /app/auth-service.jar
+EXPOSE 9005
+ENTRYPOINT java -jar /app/auth-service.jar

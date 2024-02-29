@@ -1,0 +1,116 @@
+version: "3"
+services:
+    ## Databases initialized with data
+    #1 - MySQL database
+    medilabo-mysql:
+        image: mysql:latest
+        ports:
+            - 3307:3307
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_PASSWORD: password
+            MYSQL_DATABASE: medilabo
+        volumes:
+            - .docker/mysql_setup.sql:/docker-entrypoint-initdb.d/mysql_setup.sql
+            - db_data:/var/lib/mysql
+        restart: always
+    #2 - MongoDB database
+    medilabo-mongodb:
+        image: mongo
+        ports:
+          - 27018:27018
+        restart: always
+        environment:
+          MONGO_INITDB_DATABASE: medilabo
+        volumes:
+          - ./init-mongodb.js:/docker-entrypoint-initdb.d/init-mongodb.js:ro
+
+    ## App microservices
+    #3 - Discovery server Eureka
+    medilabo-eureka-server:
+        image: medilabo-eureka-server
+        build:
+            context: ./eureka-server
+        ports: 
+            - 9101:9101
+        restart: always
+    #4 - AA Gateway
+    medilabo-gateway-service:
+        image: medilabo-gateway-service
+        build:
+            context: ./gateway
+        ports: 
+            - 9004:9004
+        restart: always
+        #environment:
+            #EUREKA_HOST: medilabo-eureka-server
+    #5 - Authentication service (needs MySQL db)
+    medilabo-auth-service:
+        depends_on:
+            - medilabo-mysql
+        image: medilabo-auth-service
+        build:
+            context: ./auth-service
+        ports: 
+            - 9005:9005
+        restart: always
+        environment:
+            #EUREKA_HOST: medilabo-eureka-server
+            MYSQL_HOST: medilabo-mysql
+            MYSQL_PORT: 3307
+            MYSQL_DB_NAME: medilabo
+            MYSQL_ROOT_PASSWORD: password
+    #6 - Patient service (needs MySQL db)
+    medilabo-patient-service:
+        depends_on:
+            - medilabo-mysql
+        image: medilabo-patient-service
+        build:
+            context: ./patient
+        ports: 
+            - 9001:9001
+        restart: always
+        environment:
+            #EUREKA_HOST: medilabo-eureka-server
+            MYSQL_HOST: medilabo-mysql
+            MYSQL_PORT: 3307
+            MYSQL_DB_NAME: medilabo
+            MYSQL_ROOT_PASSWORD: password
+    #7 - Patient history service (needs MongoDB db)
+    medilabo-notes-service:
+        depends_on:
+            - medilabo-mongodb
+        image: medilabo-notes-service
+        build:
+            context: ./notes
+        ports: 
+            - 9002:9002
+        restart: always
+        environment:
+            #EUREKA_HOST: medilabo-eureka-server
+            MONGODB_HOST: medilabo-mongodb
+            MONGODB_PORT: 27018
+            MONGODB_DB_NAME: medilabo
+    #8 - Risk assessment service (needs patient & history services)
+    medilabo-risk-service:
+        image: medilabo-risk-service
+        build:
+            context: ./risk
+        ports: 
+            - 9003:9003
+        restart: always
+        #environment:
+            #EUREKA_HOST: medilabo-eureka-server
+    #9 - UI service (needs all other services to be running)
+    medilabo-ui-service:
+        image: medilabo-ui-service
+        build:
+            context: ./ui
+        ports: 
+            - 8080:8080
+        restart: always
+        #environment:
+            #EUREKA_HOST: medilabo-eureka-server
+            #FEIGN_HOSTNAME: medilabo-gateway-service
+volumes:
+    db_data:
