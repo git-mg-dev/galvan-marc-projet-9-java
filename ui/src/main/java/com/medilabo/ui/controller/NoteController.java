@@ -28,11 +28,11 @@ public class NoteController {
         String token = JwtUtil.findToken(httpServletRequest);
 
         if(id != null) {
-            PatientBean patient = gatewayProxy.getPatientById(token, id);
-            patient.setRiskLevel(gatewayProxy.assessRisk(token, patient.getId()));
+            PatientBean patient = gatewayProxy.getPatientById(token, id).getBody();
+            patient.setRiskLevel(gatewayProxy.assessRisk(token, patient.getId()).getBody());
 
             if(patient != null) {
-                List<NoteBean> notes = gatewayProxy.getNotesByPatientId(token, id);
+                List<NoteBean> notes = gatewayProxy.getNotesByPatientId(token, id).getBody();
                 NoteBean noteBean = new NoteBean();
                 noteBean.setPatientId(patient.getId());
                 noteBean.setPatient(patient.getLastname());
@@ -61,7 +61,7 @@ public class NoteController {
     @PostMapping("/notes")
     private String addNote(@Valid NoteBean noteBean, BindingResult bindingResult, HttpServletRequest httpServletRequest, Model model) {
         String token = JwtUtil.findToken(httpServletRequest);
-        List<NoteBean> notes = gatewayProxy.getNotesByPatientId(token, noteBean.getPatientId());
+        List<NoteBean> notes = gatewayProxy.getNotesByPatientId(token, noteBean.getPatientId()).getBody();
 
         if(!bindingResult.hasErrors()) {
             try {

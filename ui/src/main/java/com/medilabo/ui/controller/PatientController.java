@@ -23,8 +23,8 @@ public class PatientController {
     public String getPatients(HttpServletRequest httpServletRequest, Model model) {
 
         String token = JwtUtil.findToken(httpServletRequest);
-        List<PatientBean> patients = gatewayProxy.getAllPatient(token);
-        patients.forEach(patient -> patient.setRiskLevel(gatewayProxy.assessRisk(token, patient.getId())));
+        List<PatientBean> patients = gatewayProxy.getAllPatient(token).getBody();
+        patients.forEach(patient -> patient.setRiskLevel(gatewayProxy.assessRisk(token, patient.getId()).getBody()));
 
         model.addAttribute("patients", patients);
 
@@ -37,7 +37,7 @@ public class PatientController {
         String token = JwtUtil.findToken(httpServletRequest);
 
         if(id != null) {
-            patient = gatewayProxy.getPatientById(token, id);
+            patient = gatewayProxy.getPatientById(token, id).getBody();
         }
 
         model.addAttribute("patientBean", patient);

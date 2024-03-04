@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS medilabo;
 
 -- create tables
+USE medilabo;
 DROP TABLE IF EXISTS patient;
 DROP TABLE IF EXISTS doctor;
 

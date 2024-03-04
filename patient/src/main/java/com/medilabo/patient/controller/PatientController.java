@@ -16,18 +16,17 @@ public class PatientController {
     private PatientService patientService;
 
     @GetMapping("/patient")
-    private List<Patient> getAllPatient() {
-
-        return patientService.getAllPatient();
+    private ResponseEntity<List<Patient>> getAllPatient(@RequestHeader("medilabo-token") String token) {
+        return new ResponseEntity<>(patientService.getAllPatient(), HttpStatus.OK);
     }
 
     @GetMapping("/patient/{id}")
-    private Patient getPatientById(@PathVariable int id) {
-        return patientService.getPatientById(id);
+    private ResponseEntity<Patient> getPatientById(@RequestHeader("medilabo-token") String token, @PathVariable int id) {
+        return new ResponseEntity<>(patientService.getPatientById(id), HttpStatus.OK);
     }
 
     @PostMapping("/patient")
-    private ResponseEntity<Patient> addPatient(@RequestBody Patient patient) {
+    private ResponseEntity<Patient> addPatient(@RequestHeader("medilabo-token") String token, @RequestBody Patient patient) {
         try {
             Patient newPatient = patientService.SavePatient(patient);
             return new ResponseEntity<Patient>(newPatient, HttpStatus.CREATED);
@@ -38,7 +37,7 @@ public class PatientController {
     }
 
     @PutMapping("/patient")
-    private void updatePatient(@RequestBody Patient patient) {
+    private void updatePatient(@RequestHeader("medilabo-token") String token, @RequestBody Patient patient) {
         patientService.SavePatient(patient);
     }
 }
