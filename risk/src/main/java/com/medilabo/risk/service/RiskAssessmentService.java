@@ -19,11 +19,11 @@ public class RiskAssessmentService {
     @Autowired
     private NotesProxy notesProxy;
 
-    public RiskLevelEnum assessRisk(Integer patientId) {
+    public RiskLevelEnum assessRisk(String token, Integer patientId) {
         // Get data
         if(patientId != null) {
-            PatientBean patientBean = patientProxy.getPatientById(patientId);
-            List<String> triggers = notesProxy.getTriggersByPatientId(patientId);
+            PatientBean patientBean = patientProxy.getPatientById(token, patientId);
+            List<String> triggers = notesProxy.getTriggersByPatientId(token, patientId);
 
             if(patientBean != null && patientBean.getBirthdate() != null) {
 

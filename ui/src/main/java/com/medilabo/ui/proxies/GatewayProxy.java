@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "medilabo-gateway-service", url = "localhost:9004")
+@FeignClient(name = "medilabo-gateway-service", url = "${proxy.gateway.url}")
 public interface GatewayProxy {
     @GetMapping("/patient")
-    List<PatientBean> getAllPatient(@RequestHeader(value = "Authorization", required = true) String token);
+    ResponseEntity<List<PatientBean>> getAllPatient(@RequestHeader(value = "Authorization", required = true) String token);
 
     @GetMapping("/patient/{id}")
-    PatientBean getPatientById(@RequestHeader(value = "Authorization", required = true) String token, @PathVariable int id);
+    ResponseEntity<PatientBean> getPatientById(@RequestHeader(value = "Authorization", required = true) String token, @PathVariable int id);
 
     @PostMapping("/patient")
     ResponseEntity<PatientBean> addPatient(@RequestHeader(value = "Authorization", required = true) String token, @RequestBody PatientBean patient);
@@ -23,11 +23,11 @@ public interface GatewayProxy {
     void updatePatient(@RequestHeader(value = "Authorization", required = true) String token, @RequestBody PatientBean patient);
 
     @GetMapping("/notes/{patientId}")
-    List<NoteBean> getNotesByPatientId(@RequestHeader(value = "Authorization", required = true) String token, @PathVariable int patientId);
+    ResponseEntity<List<NoteBean>> getNotesByPatientId(@RequestHeader(value = "Authorization", required = true) String token, @PathVariable int patientId);
 
     @PostMapping("/notes")
     ResponseEntity<NoteBean> addNote(@RequestHeader(value = "Authorization", required = true) String token, @RequestBody NoteBean note);
 
     @GetMapping("/risk/{patientId}")
-    public String assessRisk(@RequestHeader(value = "Authorization", required = true) String token, @PathVariable Integer patientId);
+    ResponseEntity<String> assessRisk(@RequestHeader(value = "Authorization", required = true) String token, @PathVariable Integer patientId);
 }

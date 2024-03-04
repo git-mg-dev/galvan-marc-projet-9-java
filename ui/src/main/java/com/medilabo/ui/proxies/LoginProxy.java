@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "medilabo-authentication-service", url = "localhost:9005")
+@FeignClient(name = "medilabo-authentication-service", url = "${proxy.authentication.url}")
 public interface LoginProxy {
     @GetMapping("/getUser")
     ResponseEntity<DoctorBean> getDoctorByUsername(@RequestParam String username);

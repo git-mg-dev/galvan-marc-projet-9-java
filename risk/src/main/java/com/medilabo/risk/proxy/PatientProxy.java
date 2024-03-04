@@ -4,9 +4,10 @@ import com.medilabo.risk.model.PatientBean;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "medilabo-patient", url = "localhost:9001")
+@FeignClient(name = "medilabo-patient", url = "${proxy.patient.url}")
 public interface PatientProxy {
     @GetMapping("/patient/{id}")
-    PatientBean getPatientById(@PathVariable int id);
+    PatientBean getPatientById(@RequestHeader(value = "medilabo-token", required = true) String token, @PathVariable int id);
 }

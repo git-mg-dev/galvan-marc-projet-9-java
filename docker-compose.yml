@@ -1,0 +1,100 @@
+version: '3'
+
+services:
+    docker-mysql:
+        image: mysql:5.7
+        environment:
+          MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+          MYSQL_DATABASE: ${MYSQL_DATABASE}
+        ports:
+          - 3307:3306
+        volumes:
+          - ./scripts/mysql_setup.sql:/docker-entrypoint-initdb.d/mysql_setup.sql
+          - db_data:/var/lib/mysql
+
+    docker-mongodb:
+        image: mongo
+        ports:
+          - 27018:27017
+        environment:
+          MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+        volumes:
+          - ./scripts/init-mongodb.js:/docker-entrypoint-initdb.d/init-mongodb.js
+          - mongo-volume:/data/db
+
+    eureka-server:
+        image: eureka-server:latest
+        ports:
+          - 9102:9101
+
+    auth-service:
+        image: auth-service:latest
+        ports:
+          - 9015:9005
+        environment:
+          MYSQL_PORT: 3306
+          MYSQL_HOST: ${MYSQL_HOST}
+          MYSQL_DB_NAME: ${MYSQL_DB_NAME}
+          MYSQL_USER: ${MYSQL_USER}
+          MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+          EUREKA_HOST: ${EUREKA_HOST}
+        depends_on:
+          - docker-mysql
+
+    patient-service:
+        image: patient-service:latest
+        ports:
+          - 9011:9001
+        environment:
+          MYSQL_PORT: 3306
+          MYSQL_HOST: ${MYSQL_HOST}
+          MYSQL_DB_NAME: ${MYSQL_DB_NAME}
+          MYSQL_USER: ${MYSQL_USER}
+          MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+          EUREKA_HOST: ${EUREKA_HOST}
+        depends_on:
+          - docker-mysql
+
+    notes-service:
+        image: notes-service:latest
+        ports: 
+            - 9012:9002
+        environment:
+          MONGODB_PORT: 27017
+          MONGODB_HOST: ${MONGODB_HOST}
+          MONGODB_DB_NAME: ${MONGODB_DB_NAME}
+          EUREKA_HOST: ${EUREKA_HOST}
+        depends_on:
+            - docker-mongodb
+
+    risk-service:
+        image: risk-service:latest
+        ports: 
+            - 9013:9003
+        environment:
+          EUREKA_HOST: ${EUREKA_HOST}
+          proxy.patient.url: patient-service:9001
+          proxy.notes.url: notes-service:9002
+
+    gateway-service:
+        image: gateway-service:latest
+        ports:
+          - 9014:9004
+        environment:
+          EUREKA_HOST: ${EUREKA_HOST}
+          gateway.patient.serviceUrl: http://patient-service:9001/
+          gateway.notes.serviceUrl: http://notes-service:9002/
+          gateway.risk.serviceUrl: http://risk-service:9003/
+
+    ui-service:
+        image: ui-service:latest
+        ports: 
+            - 8080:8080
+        environment:
+          EUREKA_HOST: ${EUREKA_HOST}
+          proxy.gateway.url: gateway-service:9004
+          proxy.authentication.url: auth-service:9005
+
+volumes:
+  db_data: {}
+  mongo-volume: {}

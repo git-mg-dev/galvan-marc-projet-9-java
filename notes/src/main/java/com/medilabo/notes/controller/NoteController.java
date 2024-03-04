@@ -15,17 +15,17 @@ public class NoteController {
     private NoteService noteService;
 
     @GetMapping("/notes/{patientId}")
-    public List<Note> getNotesByPatientId(@PathVariable int patientId) {
-        return noteService.getNotesByPatientId(patientId);
+    public ResponseEntity<List<Note>> getNotesByPatientId(@RequestHeader("medilabo-token") String token, @PathVariable int patientId) {
+        return new ResponseEntity<List<Note>>(noteService.getNotesByPatientId(patientId), HttpStatus.OK);
     }
 
     @GetMapping("/notes/trigger/{patientId}")
-    public List<String> getTriggersByPatientId(@PathVariable int patientId) {
-        return noteService.getTriggerForPatient(patientId);
+    public ResponseEntity<List<String>> getTriggersByPatientId(@RequestHeader("medilabo-token") String token, @PathVariable int patientId) {
+        return new ResponseEntity<List<String>>(noteService.getTriggerForPatient(patientId), HttpStatus.OK);
     }
 
     @PostMapping("/notes")
-    private ResponseEntity<Note> addNote(@RequestBody Note note) {
+    private ResponseEntity<Note> addNote(@RequestHeader("medilabo-token") String token, @RequestBody Note note) {
         try {
             Note newNote = noteService.SaveNote(note);
             return new ResponseEntity<Note>(newNote, HttpStatus.CREATED);

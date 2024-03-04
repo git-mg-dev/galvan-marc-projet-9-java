@@ -60,8 +60,13 @@ public class AuthenticationFilter implements GatewayFilter {
 
     private void populateRequestWithHeaders(ServerWebExchange exchange, String token) {
         Claims claims = jwtService.getAllClaimsFromToken(token);
-        exchange.getRequest().mutate().build();
-    }
 
+        ServerHttpRequest request = exchange.getRequest()
+                .mutate()
+                .headers(httpHeaders -> httpHeaders.set("medilabo-token", token))
+                .build();
+
+        exchange.mutate().request(request).build();
+    }
 
 }
