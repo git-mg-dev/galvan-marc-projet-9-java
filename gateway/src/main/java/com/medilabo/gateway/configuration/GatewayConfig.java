@@ -18,10 +18,15 @@ public class GatewayConfig {
     private String notesServiceUrl;
     @Value("${gateway.risk.serviceUrl}")
     private String riskServiceUrl;
+    @Value("${gateway.auth.serviceUrl}")
+    private String authServiceUrl;
 
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
+                .route("medilabo-authentication-service", r -> r.path("/authenticate/**")
+                        .filters(f -> f.filter(filter))
+                        .uri(authServiceUrl))
                 .route("medilabo-patient", r -> r.path("/patient/**")
                         .filters(f -> f.filter(filter))
                         .uri(patientServiceUrl))

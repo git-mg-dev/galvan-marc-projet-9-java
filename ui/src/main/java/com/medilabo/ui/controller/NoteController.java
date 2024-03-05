@@ -28,8 +28,7 @@ public class NoteController {
         String token = JwtUtil.findToken(httpServletRequest);
 
         if(id != null) {
-            PatientBean patient = gatewayProxy.getPatientById(token, id).getBody();
-            patient.setRiskLevel(gatewayProxy.assessRisk(token, patient.getId()).getBody());
+            PatientBean patient = calculateRisk(token, id);
 
             if(patient != null) {
                 List<NoteBean> notes = gatewayProxy.getNotesByPatientId(token, id).getBody();
@@ -37,14 +36,7 @@ public class NoteController {
                 noteBean.setPatientId(patient.getId());
                 noteBean.setPatient(patient.getLastname());
 
-                model.addAttribute("notes", notes); // list of notes
-                model.addAttribute("noteBean", noteBean); // new noteBean for form
-
-                model.addAttribute("firstname", patient.getFirstname());
-                model.addAttribute("lastname", patient.getLastname());
-                model.addAttribute("birthdate", patient.getBirthdate());
-                model.addAttribute("age", patient.getAge());
-                model.addAttribute("gender", patient.getGender());
+                addAttributesToModel(model, notes, noteBean, patient);
 
                 if(patient.getRiskLevel() != null) {
                     model.addAttribute("riskLevel", patient.getRiskLevel());
@@ -61,6 +53,7 @@ public class NoteController {
     @PostMapping("/notes")
     private String addNote(@Valid NoteBean noteBean, BindingResult bindingResult, HttpServletRequest httpServletRequest, Model model) {
         String token = JwtUtil.findToken(httpServletRequest);
+        PatientBean patient = calculateRisk(token, noteBean.getPatientId());
         List<NoteBean> notes = gatewayProxy.getNotesByPatientId(token, noteBean.getPatientId()).getBody();
 
         if(!bindingResult.hasErrors()) {
@@ -71,14 +64,35 @@ public class NoteController {
                     }
                 } catch (Exception e) {
 
-                model.addAttribute("notes", notes); // list of notes
-                model.addAttribute("noteBean", noteBean); // new note for form
+                addAttributesToModel(model, notes, noteBean, patient);
                 return "redirect:/notes?id=" + noteBean.getPatientId() + "&error";
             }
         }
 
-        model.addAttribute("notes", notes); // list of notes
-        model.addAttribute("noteBean", noteBean); // new note for form
+        addAttributesToModel(model, notes, noteBean, patient);
         return "notes";
+    }
+
+    private PatientBean calculateRisk(String token, Integer id) {
+        if(id != null) {
+            PatientBean result = gatewayProxy.getPatientById(token, id).getBody();
+            if (result != null) {
+                result.setRiskLevel(gatewayProxy.assessRisk(token, result.getId()).getBody());
+            }
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    private void addAttributesToModel(Model model, List<NoteBean> notes, NoteBean newNote, PatientBean patient) {
+        model.addAttribute("notes", notes); // list of notes
+        model.addAttribute("noteBean", newNote); // new noteBean for form
+
+        model.addAttribute("firstname", patient.getFirstname());
+        model.addAttribute("lastname", patient.getLastname());
+        model.addAttribute("birthdate", patient.getBirthdate());
+        model.addAttribute("age", patient.getAge());
+        model.addAttribute("gender", patient.getGender());
     }
 }

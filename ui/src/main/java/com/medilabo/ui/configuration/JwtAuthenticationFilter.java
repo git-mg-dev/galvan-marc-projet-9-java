@@ -1,6 +1,6 @@
 package com.medilabo.ui.configuration;
 
-import com.medilabo.ui.proxies.LoginProxy;
+import com.medilabo.ui.proxies.GatewayProxy;
 import com.medilabo.ui.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +21,7 @@ import java.io.IOException;
 @Service
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
-    private LoginProxy loginProxy;
+    private GatewayProxy gatewayProxy;
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
@@ -34,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(!jwtToken.isEmpty()) {
             try {
-                String username = loginProxy.validateToken(jwtToken).getBody();
+                String username = gatewayProxy.validateToken(jwtToken).getBody();
 
                 if (!username.isEmpty()) {
 

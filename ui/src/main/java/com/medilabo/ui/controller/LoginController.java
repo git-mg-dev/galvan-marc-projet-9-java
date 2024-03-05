@@ -1,7 +1,7 @@
 package com.medilabo.ui.controller;
 
 import com.medilabo.ui.configuration.AuthRequest;
-import com.medilabo.ui.proxies.LoginProxy;
+import com.medilabo.ui.proxies.GatewayProxy;
 import com.medilabo.ui.util.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,13 +19,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.Arrays;
-
 @Log4j2
 @Controller
 public class LoginController {
     @Autowired
-    private LoginProxy loginProxy;
+    private GatewayProxy gatewayProxy;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -51,7 +49,7 @@ public class LoginController {
 
         //Getting user details & creating cookie
         try {
-            ResponseEntity<String> responseEntity = loginProxy.authenticate(authRequest);
+            ResponseEntity<String> responseEntity = gatewayProxy.authenticate(authRequest);
             if(!responseEntity.getStatusCode().is2xxSuccessful()) {
                 return "redirect:login?error";
             }

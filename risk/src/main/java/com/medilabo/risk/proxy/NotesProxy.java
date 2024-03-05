@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
-@FeignClient(name = "medilabo-notes", url = "${proxy.notes.url}")
+@FeignClient(name = "medilabo-notes-service", url = "${proxy.notes.url}")
 public interface NotesProxy {
     @GetMapping("/notes/trigger/{patientId}")
     List<String> getTriggersByPatientId(@RequestHeader(value = "medilabo-token", required = true) String token, @PathVariable int patientId);

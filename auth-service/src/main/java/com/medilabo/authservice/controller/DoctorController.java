@@ -16,7 +16,7 @@ public class DoctorController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/getUser")
+    @GetMapping("/authenticate/getUser")
     public ResponseEntity<Doctor> getDoctorByUsername(@RequestParam String username) {
         Doctor doctor = authService.findByUsername(username);
 
@@ -26,7 +26,7 @@ public class DoctorController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/validateToken")
+    @GetMapping("/authenticate/validateToken")
     public ResponseEntity<String> validateToken(@RequestParam String token) {
         String username = "";
         if(authService.isValidToken(token)) {

@@ -52,6 +52,7 @@ services:
           MYSQL_USER: ${MYSQL_USER}
           MYSQL_PASSWORD: ${MYSQL_PASSWORD}
           EUREKA_HOST: ${EUREKA_HOST}
+          proxy.auth.url: auth-service:9005
         depends_on:
           - docker-mysql
 
@@ -64,6 +65,7 @@ services:
           MONGODB_HOST: ${MONGODB_HOST}
           MONGODB_DB_NAME: ${MONGODB_DB_NAME}
           EUREKA_HOST: ${EUREKA_HOST}
+          proxy.auth.url: auth-service:9005
         depends_on:
             - docker-mongodb
 
@@ -85,6 +87,7 @@ services:
           gateway.patient.serviceUrl: http://patient-service:9001/
           gateway.notes.serviceUrl: http://notes-service:9002/
           gateway.risk.serviceUrl: http://risk-service:9003/
+          gateway.auth.serviceUrl: http://auth-service:9005/
 
     ui-service:
         image: ui-service:latest
@@ -93,7 +96,6 @@ services:
         environment:
           EUREKA_HOST: ${EUREKA_HOST}
           proxy.gateway.url: gateway-service:9004
-          proxy.authentication.url: auth-service:9005
 
 volumes:
   db_data: {}

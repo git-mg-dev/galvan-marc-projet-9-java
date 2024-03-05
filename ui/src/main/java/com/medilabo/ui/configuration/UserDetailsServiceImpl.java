@@ -1,7 +1,7 @@
 package com.medilabo.ui.configuration;
 
 import com.medilabo.ui.beans.DoctorBean;
-import com.medilabo.ui.proxies.LoginProxy;
+import com.medilabo.ui.proxies.GatewayProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,11 +15,11 @@ import java.util.ArrayList;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    private LoginProxy loginProxy;
+    private GatewayProxy gatewayProxy;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ResponseEntity<DoctorBean> doctorResponse = loginProxy.getDoctorByUsername(username);
+        ResponseEntity<DoctorBean> doctorResponse = gatewayProxy.getDoctorByUsername(username);
 
         if(doctorResponse.getStatusCode().is2xxSuccessful()) {
             DoctorBean doctor = doctorResponse.getBody();
