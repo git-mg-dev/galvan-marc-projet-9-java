@@ -16,7 +16,7 @@ Repository pour le projet 9 de la formation développeur d'application Java
   - Service risque pour évaluer le risque de diabète
   - Service UI pour l'interface utilisateur
 - Diagramme d'architecture
-![diagramme-architecture](https://github.com/git-mg-dev/galvan-marc-projet-9-java/assets/144458198/6e62e9e5-b90f-4a57-98ca-93c102952c16)
+![Diagramme-architecture-2s](https://github.com/git-mg-dev/galvan-marc-projet-9-java/assets/144458198/d2224c44-20fe-4987-86ab-1c2a9a5a6632)
 
 ### Utilisation de l'application sur Docker
 - Contruire les images de tous les microservices à partir des dockerfiles
@@ -31,3 +31,14 @@ Repository pour le projet 9 de la formation développeur d'application Java
 - Vérifier que tous les microservices sont lancés sur http://localhost:9101/ (Eureka)
 - Aller sur l'application http://localhost:8080/
 - Pour s'authentifier, les identifiants sont prérenseignés
+
+## Recommandations Green Code
+Faire du Green coding c'est mettre en œuvre une pratique de développement qui permet de produire un code plus vertueux afin de minimiser l’utilisation de ressources par l’application. Par ressources, on entend :
+- La mémoire -> éviter les fuites mémoire
+- L’utilisation CPU -> optimisation des algorithmes
+- L’utilisation du réseaux -> réduire le nombre de requêtes, minimiser la taille des données véhiculées, etc.
+
+Quelques pistes d'amélioration de l'application :
+- Paginer la liste des patients pour limiter la taille des données retournées
+- Refactorer la boucle forEach qui affiche la liste des patients pour diminuer le nombre de requêtes à la BDD
+- Rendre le champ riskLevel statique pour ne pas le calculer à la volée à chaque fois qu'on affiche les données d'un patient
