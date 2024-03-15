@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "medilabo-gateway-service", url = "${proxy.gateway.url}")
+@FeignClient(name = "medilabo-gateway-service")
 public interface GatewayProxy {
     // User authentication
     @GetMapping("/authenticate/getUser")

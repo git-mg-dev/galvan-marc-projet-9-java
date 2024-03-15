@@ -5,6 +5,5 @@ public enum RiskLevelEnum {
     BorderLine,
     InDanger,
     EarlyOnset,
-    ErrorGenderUnknown,
-    ErrorNoData
+    Error
 }

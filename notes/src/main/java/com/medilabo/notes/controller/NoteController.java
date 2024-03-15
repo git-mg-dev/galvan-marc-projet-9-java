@@ -14,58 +14,25 @@ import java.util.List;
 public class NoteController {
     @Autowired
     private NoteService noteService;
-    @Autowired
-    private AuthProxy authProxy;
 
     @GetMapping("/notes/{patientId}")
-    public ResponseEntity<List<Note>> getNotesByPatientId(@RequestHeader("medilabo-token") String token, @PathVariable int patientId) {
-        HttpStatus checkToken = validateToken(token);
-
-        if (checkToken.is2xxSuccessful()) {
-            return new ResponseEntity<List<Note>>(noteService.getNotesByPatientId(patientId), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(checkToken);
-        }
+    public ResponseEntity<List<Note>> getNotesByPatientId(@PathVariable int patientId) {
+        return new ResponseEntity<List<Note>>(noteService.getNotesByPatientId(patientId), HttpStatus.OK);
     }
 
     @GetMapping("/notes/trigger/{patientId}")
-    public ResponseEntity<List<String>> getTriggersByPatientId(@RequestHeader("medilabo-token") String token, @PathVariable int patientId) {
-        HttpStatus checkToken = validateToken(token);
-
-        if (checkToken.is2xxSuccessful()) {
-            return new ResponseEntity<List<String>>(noteService.getTriggerForPatient(patientId), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(checkToken);
-        }
+    public ResponseEntity<List<String>> getTriggersByPatientId(@PathVariable int patientId) {
+        return new ResponseEntity<List<String>>(noteService.getTriggerForPatient(patientId), HttpStatus.OK);
     }
 
     @PostMapping("/notes")
-    private ResponseEntity<Note> addNote(@RequestHeader("medilabo-token") String token, @RequestBody Note note) {
-        HttpStatus checkToken = validateToken(token);
-
-        if (checkToken.is2xxSuccessful()) {
-            try {
-                Note newNote = noteService.SaveNote(note);
-                return new ResponseEntity<Note>(newNote, HttpStatus.CREATED);
-
-            } catch (Exception exception) {
-                return new ResponseEntity<Note>((Note) null, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            return new ResponseEntity<>(checkToken);
-        }
-    }
-
-    private HttpStatus validateToken(String token) {
+    private ResponseEntity<Note> addNote(@RequestBody Note note) {
         try {
-            ResponseEntity<String> authUserResponse = authProxy.validateToken(token);
-            if(authUserResponse.hasBody() && !authUserResponse.getBody().isEmpty()) {
-                return HttpStatus.OK;
-            } else {
-                return HttpStatus.UNAUTHORIZED;
-            }
-        } catch (Exception e) {
-            return HttpStatus.NOT_FOUND;
+            Note newNote = noteService.SaveNote(note);
+            return new ResponseEntity<Note>(newNote, HttpStatus.CREATED);
+
+        } catch (Exception exception) {
+            return new ResponseEntity<Note>((Note) null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

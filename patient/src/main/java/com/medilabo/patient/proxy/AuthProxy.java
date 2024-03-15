@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "medilabo-authentication-service", url = "${proxy.auth.url}")
+@FeignClient(name = "medilabo-authentication-service")
 public interface AuthProxy {
     @GetMapping("/authenticate/validateToken")
     ResponseEntity<String> validateToken(@RequestParam String token);

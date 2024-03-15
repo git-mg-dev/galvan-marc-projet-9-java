@@ -23,12 +23,14 @@ services:
           - mongo-volume:/data/db
 
     eureka-server:
-        image: eureka-server:latest
+        build:
+            context: ./eureka-server
         ports:
           - 9102:9101
 
     auth-service:
-        image: auth-service:latest
+        build:
+            context: ./auth-service
         ports:
           - 9015:9005
         environment:
@@ -42,7 +44,8 @@ services:
           - docker-mysql
 
     patient-service:
-        image: patient-service:latest
+        build:
+            context: ./patient
         ports:
           - 9011:9001
         environment:
@@ -57,7 +60,8 @@ services:
           - docker-mysql
 
     notes-service:
-        image: notes-service:latest
+        build:
+            context: ./notes
         ports: 
             - 9012:9002
         environment:
@@ -70,32 +74,28 @@ services:
             - docker-mongodb
 
     risk-service:
-        image: risk-service:latest
+        build:
+            context: ./risk
         ports: 
             - 9013:9003
         environment:
           EUREKA_HOST: ${EUREKA_HOST}
-          proxy.patient.url: patient-service:9001
-          proxy.notes.url: notes-service:9002
 
     gateway-service:
-        image: gateway-service:latest
+        build:
+            context: ./gateway
         ports:
           - 9014:9004
         environment:
           EUREKA_HOST: ${EUREKA_HOST}
-          gateway.patient.serviceUrl: http://patient-service:9001/
-          gateway.notes.serviceUrl: http://notes-service:9002/
-          gateway.risk.serviceUrl: http://risk-service:9003/
-          gateway.auth.serviceUrl: http://auth-service:9005/
 
     ui-service:
-        image: ui-service:latest
+        build:
+            context: ./ui
         ports: 
             - 8080:8080
         environment:
           EUREKA_HOST: ${EUREKA_HOST}
-          proxy.gateway.url: gateway-service:9004
 
 volumes:
   db_data: {}

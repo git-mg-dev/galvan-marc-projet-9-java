@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 public class RiskAssessmentService {
@@ -38,49 +40,46 @@ public class RiskAssessmentService {
                 // Assess risk
                 return calculateRisk(triggers.size(), age, patientBean.getGender());
             } else {
-                return RiskLevelEnum.ErrorNoData;
+                return RiskLevelEnum.Error;
             }
         } else {
-            return RiskLevelEnum.ErrorNoData;
+            return RiskLevelEnum.Error;
         }
     }
 
-    private RiskLevelEnum calculateRisk(int score, int age, String gender) {
+    public RiskLevelEnum calculateRisk(int score, int age, String gender) {
         RiskLevelEnum riskLevel = RiskLevelEnum.None;
 
-        if(age < 30) {
-            if(gender.equals("F")) {
-                if(score < 4) {
-                    riskLevel = RiskLevelEnum.None;
-                } else if (score < 7) {
-                    riskLevel = RiskLevelEnum.InDanger;
-                } else { // 8 and over
-                    riskLevel = RiskLevelEnum.EarlyOnset;
-                }
-            } else if (gender.equals("M")) {
-                if(score < 3) {
-                    riskLevel = RiskLevelEnum.None;
-                } else if (score < 5) {
-                    riskLevel = RiskLevelEnum.InDanger;
-                } else { // 8 and over
-                    riskLevel = RiskLevelEnum.EarlyOnset;
-                }
-            } else {
-                riskLevel = RiskLevelEnum.ErrorGenderUnknown;
-            }
-        } else {
-            // the risk is the same for both genders
-            if(score < 2) {
-                riskLevel = RiskLevelEnum.None;
-            } else if (score < 6) {
-                riskLevel = RiskLevelEnum.BorderLine;
-            } else if (score < 8) {
-                riskLevel = RiskLevelEnum.InDanger;
-            } else { // 8 and over
-                riskLevel = RiskLevelEnum.EarlyOnset;
-            }
-        }
+        // 3 levels map: Gender > Age > Score --> risk level
+        Map<String, TreeMap<Integer, TreeMap<Integer, RiskLevelEnum>>> mapping = new TreeMap<>();
+        mapping.put("F", new TreeMap<>());
+        mapping.put("M", new TreeMap<>());
 
-        return riskLevel;
+        TreeMap<Integer, RiskLevelEnum> fUnder30 = new TreeMap<>();
+        fUnder30.put(0, RiskLevelEnum.None);
+        fUnder30.put(4, RiskLevelEnum.InDanger);
+        fUnder30.put(7, RiskLevelEnum.EarlyOnset);
+
+        TreeMap<Integer, RiskLevelEnum> mUnder30 = new TreeMap<>();
+        mUnder30.put(0, RiskLevelEnum.None);
+        mUnder30.put(3, RiskLevelEnum.InDanger);
+        mUnder30.put(5, RiskLevelEnum.EarlyOnset);
+
+        TreeMap<Integer, RiskLevelEnum> over30 = new TreeMap<>();
+        over30.put(0, RiskLevelEnum.None);
+        over30.put(2, RiskLevelEnum.BorderLine);
+        over30.put(6, RiskLevelEnum.InDanger);
+        over30.put(8, RiskLevelEnum.EarlyOnset);
+
+        mapping.get("F").put(0, fUnder30);
+        mapping.get("F").put(30, over30);
+        mapping.get("M").put(0, mUnder30);
+        mapping.get("M").put(30, over30);
+
+        if(!mapping.containsKey(gender)) {
+            return RiskLevelEnum.Error;
+        } else {
+            return mapping.get(gender).floorEntry(age).getValue().floorEntry(score).getValue();
+        }
     }
 }

@@ -1,6 +1,7 @@
 -- create database
-CREATE DATABASE IF NOT EXISTS medilabo;
+CREATE DATABASE IF NOT EXISTS medilabo_test;
 
+USE medilabo_test;
 
 -- create tables
 DROP TABLE IF EXISTS patient;

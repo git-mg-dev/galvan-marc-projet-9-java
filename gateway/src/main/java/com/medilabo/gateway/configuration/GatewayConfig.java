@@ -12,32 +12,23 @@ public class GatewayConfig {
     @Autowired
     private AuthenticationFilter filter;
 
-    @Value("${gateway.patient.serviceUrl}")
-    private String patientServiceUrl;
-    @Value("${gateway.notes.serviceUrl}")
-    private String notesServiceUrl;
-    @Value("${gateway.risk.serviceUrl}")
-    private String riskServiceUrl;
-    @Value("${gateway.auth.serviceUrl}")
-    private String authServiceUrl;
-
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("medilabo-authentication-service", r -> r.path("/authenticate/**")
                         .filters(f -> f.filter(filter))
-                        .uri(authServiceUrl))
+                        .uri("lb://medilabo-authentication-service"))
                 .route("medilabo-patient", r -> r.path("/patient/**")
                         .filters(f -> f.filter(filter))
-                        .uri(patientServiceUrl))
+                        .uri("lb://medilabo-patient"))
 
                 .route("medilabo-notes", r -> r.path("/notes/**")
                         .filters(f -> f.filter(filter))
-                        .uri(notesServiceUrl))
+                        .uri("lb://medilabo-notes"))
 
                 .route("medilabo-risk", r -> r.path("/risk/**")
                         .filters(f -> f.filter(filter))
-                        .uri(riskServiceUrl))
+                        .uri("lb://medilabo-risk"))
 
                 .build();
     }
