@@ -19,8 +19,7 @@ Repository pour le projet 9 de la formation développeur d'application Java
 ![diagramme-architecture](https://github.com/git-mg-dev/galvan-marc-projet-9-java/assets/144458198/6e62e9e5-b90f-4a57-98ca-93c102952c16)
 
 ### Utilisation de l'application sur Docker
-- Contruire les images de tous les microservices à partir des dockerfiles
-- Lancer le docker compose à la racine du projet
+- Lancer le docker compose à la racine du projet (il crée les images de tous les microservices)
 - Vérifier que tous les microservices sont lancés sur http://localhost:9102/ (Eureka)
 - Aller sur l'application http://localhost:8080/
 - Pour s'authentifier, les identifiants sont prérenseignés
