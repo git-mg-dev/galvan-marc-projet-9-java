@@ -11,6 +11,12 @@ public class Note {
     private String patient;
     private String note;
 
+    public Note(Integer patientId, String patient, String note) {
+        this.patientId = patientId;
+        this.patient = patient;
+        this.note = note;
+    }
+
     public String getId() {
         return id;
     }

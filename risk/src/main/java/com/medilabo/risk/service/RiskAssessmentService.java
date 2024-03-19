@@ -21,6 +21,9 @@ public class RiskAssessmentService {
     @Autowired
     private NotesProxy notesProxy;
 
+    @Autowired
+    private RiskLevelProperties riskLevelProperties;
+
     public RiskLevelEnum assessRisk(String token, Integer patientId) {
         // Get data
         if(patientId != null) {
@@ -49,37 +52,25 @@ public class RiskAssessmentService {
 
     public RiskLevelEnum calculateRisk(int score, int age, String gender) {
         RiskLevelEnum riskLevel = RiskLevelEnum.None;
-
-        // 3 levels map: Gender > Age > Score --> risk level
-        Map<String, TreeMap<Integer, TreeMap<Integer, RiskLevelEnum>>> mapping = new TreeMap<>();
-        mapping.put("F", new TreeMap<>());
-        mapping.put("M", new TreeMap<>());
-
-        TreeMap<Integer, RiskLevelEnum> fUnder30 = new TreeMap<>();
-        fUnder30.put(0, RiskLevelEnum.None);
-        fUnder30.put(4, RiskLevelEnum.InDanger);
-        fUnder30.put(7, RiskLevelEnum.EarlyOnset);
-
-        TreeMap<Integer, RiskLevelEnum> mUnder30 = new TreeMap<>();
-        mUnder30.put(0, RiskLevelEnum.None);
-        mUnder30.put(3, RiskLevelEnum.InDanger);
-        mUnder30.put(5, RiskLevelEnum.EarlyOnset);
-
-        TreeMap<Integer, RiskLevelEnum> over30 = new TreeMap<>();
-        over30.put(0, RiskLevelEnum.None);
-        over30.put(2, RiskLevelEnum.BorderLine);
-        over30.put(6, RiskLevelEnum.InDanger);
-        over30.put(8, RiskLevelEnum.EarlyOnset);
-
-        mapping.get("F").put(0, fUnder30);
-        mapping.get("F").put(30, over30);
-        mapping.get("M").put(0, mUnder30);
-        mapping.get("M").put(30, over30);
-
-        if(!mapping.containsKey(gender)) {
-            return RiskLevelEnum.Error;
-        } else {
-            return mapping.get(gender).floorEntry(age).getValue().floorEntry(score).getValue();
+        String keyAge = "under30";
+        if(age >= 30) {
+            keyAge = "over30";
         }
+
+        if(riskLevelProperties.getEarlyOnset().containsKey(gender) &&
+                riskLevelProperties.getEarlyOnset().get(gender).containsKey(keyAge) &&
+                riskLevelProperties.getEarlyOnset().get(gender).get(keyAge) <= score) {
+            riskLevel = RiskLevelEnum.EarlyOnset;
+        } else if (riskLevelProperties.getInDanger().containsKey(gender) &&
+                riskLevelProperties.getInDanger().get(gender).containsKey(keyAge) &&
+                riskLevelProperties.getInDanger().get(gender).get(keyAge) <= score) {
+            riskLevel = RiskLevelEnum.InDanger;
+        } else if (riskLevelProperties.getBorderline().containsKey(gender) &&
+                riskLevelProperties.getBorderline().get(gender).containsKey(keyAge) &&
+                riskLevelProperties.getBorderline().get(gender).get(keyAge) <= score) {
+            riskLevel = RiskLevelEnum.BorderLine;
+        }
+
+        return riskLevel;
     }
 }

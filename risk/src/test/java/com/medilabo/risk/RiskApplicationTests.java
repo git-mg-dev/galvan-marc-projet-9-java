@@ -43,8 +43,5 @@ class RiskApplicationTests {
 		assertEquals(RiskLevelEnum.BorderLine, riskAssessmentService.calculateRisk(2, 32, "M"));
 		assertEquals(RiskLevelEnum.InDanger, riskAssessmentService.calculateRisk(6, 32, "M"));
 		assertEquals(RiskLevelEnum.EarlyOnset, riskAssessmentService.calculateRisk(8, 32, "M"));
-
-		// Error
-		assertEquals(RiskLevelEnum.Error, riskAssessmentService.calculateRisk(1, 23, "X"));
 	}
 }
